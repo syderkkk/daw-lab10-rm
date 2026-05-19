@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getCharacterById, getAllCharacterParams } from "@/lib/rickmorty";
 import {
   FiArrowLeft, FiMapPin, FiGlobe, FiFilm,
-  FiCalendar, FiLink, FiTag, FiActivity,
+  FiCalendar, FiLink
 } from "react-icons/fi";
 import { RiAliensFill } from "react-icons/ri";
 

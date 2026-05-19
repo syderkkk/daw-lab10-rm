@@ -9,10 +9,17 @@ const BASE_URL = "https://rickandmortyapi.com/api/character";
  */
 export async function getCharacters() {
   const res = await fetch(BASE_URL, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept": "application/json"
+    },
     cache: "force-cache", // SSG: fuerza caché estático en build-time
   });
 
-  if (!res.ok) throw new Error("Error al cargar personajes");
+  if (!res.ok) {
+    console.error("Error al cargar personajes", res.status, res.statusText, await res.text());
+    throw new Error("Error al cargar personajes");
+  }
 
   const data: RMCharacterResponse = await res.json();
   return data.results;
@@ -32,7 +39,12 @@ export async function searchCharacters(params: {
     if (value) query.set(key, value);
   });
 
-  const res = await fetch(`${BASE_URL}/?${query.toString()}`);
+  const res = await fetch(`${BASE_URL}/?${query.toString()}`, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept": "application/json"
+    }
+  });
   if (!res.ok) return [];
 
   const data: RMCharacterResponse = await res.json();
@@ -41,6 +53,10 @@ export async function searchCharacters(params: {
 
 export async function getCharacterById(id: string) {
   const res = await fetch(`${BASE_URL}/${id}`, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept": "application/json"
+    },
     next: { revalidate: 864000 },
   });
 
@@ -56,7 +72,12 @@ export async function getCharacterById(id: string) {
 export async function getAllCharacterParams() {
   const allParams: { slug: string }[] = [];
 
-  const firstRes = await fetch(BASE_URL);
+  const firstRes = await fetch(BASE_URL, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Accept": "application/json"
+    }
+  });
   if (!firstRes.ok) return [];
 
   const firstData: RMCharacterResponse = await firstRes.json();
@@ -70,17 +91,8 @@ export async function getAllCharacterParams() {
     return allParams;
   }
 
-  const pageNumbers = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
-  
-  for (const page of pageNumbers) {
-    const res = await fetch(`${BASE_URL}?page=${page}`);
-    if (res.ok) {
-      const data: RMCharacterResponse = await res.json();
-      data.results.forEach((c) => {
-        allParams.push({ slug: String(c.id) });
-      });
-    }
-  }
-
+  // Para evitar el error 429 Too Many Requests de Cloudflare durante el build
+  // de Next.js, solo pre-renderizamos la primera página (20 personajes).
+  // Los demás personajes se generarán on-demand gracias a ISR.
   return allParams;
 }

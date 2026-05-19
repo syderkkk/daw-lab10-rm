@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCharacters } from "@/lib/rickmorty";
 import { RiAliensFill } from "react-icons/ri";
-import { FiSearch, FiUsers, FiGlobe, FiZap } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 
 // SSG: página generada en build-time con caché estático (force-cache en fetch).
 // No revalida automáticamente; se actualiza con cada nuevo deploy.
