@@ -23,7 +23,6 @@ export default function CharacterCard({
 }) {
   return (
     <Link href={`/character/${character.id}`} className="character-card">
-      {/* Image */}
       <div className="card-img-wrapper">
         <Image
           src={character.image}
@@ -36,7 +35,6 @@ export default function CharacterCard({
         <div className="card-img-overlay" />
       </div>
 
-      {/* Body */}
       <div className="card-body">
         <h2 className="card-name">{character.name}</h2>
         <div className="card-meta">

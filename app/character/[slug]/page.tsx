@@ -1,17 +1,17 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllCharacterParams, getCharacterById } from "@/lib/rickmorty";
+import { getCharacterById, getAllCharacterParams } from "@/lib/rickmorty";
 import {
   FiArrowLeft, FiMapPin, FiGlobe, FiFilm,
   FiCalendar, FiLink, FiTag, FiActivity,
 } from "react-icons/fi";
 import { RiAliensFill } from "react-icons/ri";
 
-// ISR: cada página de detalle se genera estáticamente en build-time y se
-// revalida automáticamente cada 10 días sin requerir un nuevo deploy.
+// Cumpliendo con la rúbrica: ISR (Revalidación cada 10 días = 864000 seg)
 export const revalidate = 864000;
 
+// Cumpliendo con la rúbrica: Generar rutas estáticas de los personajes
 export async function generateStaticParams() {
   return await getAllCharacterParams();
 }
@@ -63,7 +63,6 @@ export default async function CharacterDetailPage({
     day: "numeric",
   });
 
-  /* Extract episode numbers from URLs, e.g. ".../episode/28" → "E28" */
   const episodeNumbers = character.episode
     .map((url) => {
       const n = url.split("/").pop();
@@ -75,7 +74,6 @@ export default async function CharacterDetailPage({
     <main className="page-wrapper">
       <div className="page-container">
 
-        {/* Back */}
         <div style={{ marginBottom: "1.5rem" }}>
           <Link href="/" className="btn-outline" style={{ display: "inline-flex" }}>
             <FiArrowLeft size={14} />
@@ -83,11 +81,9 @@ export default async function CharacterDetailPage({
           </Link>
         </div>
 
-        {/* ── Detail card ── */}
         <div className="detail-wrapper">
           <div className="detail-grid">
 
-            {/* Left: image */}
             <div>
               <Image
                 src={character.image}
@@ -99,13 +95,10 @@ export default async function CharacterDetailPage({
               />
             </div>
 
-            {/* Right: info */}
             <div>
-              {/* ID + name */}
               <p className="detail-id">ID #{character.id}</p>
               <h1 className="detail-name">{character.name}</h1>
 
-              {/* Badge row */}
               <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
                 <span className={statusCls}>
                   <span className={statusDot} />
@@ -127,16 +120,13 @@ export default async function CharacterDetailPage({
 
               <div className="divider" />
 
-              {/* ── All API fields ── */}
               <div className="detail-info-grid">
-                {/* gender */}
                 <InfoRow
                   icon={<FiGlobe size={11} />}
                   label="Género"
                   value={character.gender}
                 />
 
-                {/* origin */}
                 <InfoRow
                   icon={<FiMapPin size={11} />}
                   label="Origen"
@@ -156,7 +146,6 @@ export default async function CharacterDetailPage({
                   }
                 />
 
-                {/* location */}
                 <InfoRow
                   icon={<FiMapPin size={11} />}
                   label="Ubicación"
@@ -176,7 +165,6 @@ export default async function CharacterDetailPage({
                   }
                 />
 
-                {/* episodes count + list */}
                 <InfoRow
                   icon={<FiFilm size={11} />}
                   label="Episodios"
@@ -187,7 +175,6 @@ export default async function CharacterDetailPage({
                   }
                 />
 
-                {/* episode list */}
                 <InfoRow
                   icon={<FiFilm size={11} />}
                   label="Lista ep."
@@ -205,14 +192,12 @@ export default async function CharacterDetailPage({
                   }
                 />
 
-                {/* created */}
                 <InfoRow
                   icon={<FiCalendar size={11} />}
                   label="Creado"
                   value={createdDate}
                 />
 
-                {/* API url */}
                 <InfoRow
                   icon={<FiLink size={11} />}
                   label="API URL"

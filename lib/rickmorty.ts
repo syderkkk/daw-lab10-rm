@@ -39,14 +39,9 @@ export async function searchCharacters(params: {
   return data.results;
 }
 
-/**
- * Detalle de personaje → ISR (revalidate: 864000 = 10 días).
- * Las páginas de detalle se generan estáticamente y se revalidan
- * automáticamente cada 10 días sin necesidad de rebuild manual.
- */
 export async function getCharacterById(id: string) {
   const res = await fetch(`${BASE_URL}/${id}`, {
-    next: { revalidate: 864000 }, // ISR: 10 días en segundos
+    next: { revalidate: 864000 },
   });
 
   if (!res.ok) return null;
@@ -56,43 +51,36 @@ export async function getCharacterById(id: string) {
 }
 
 /**
- * generateStaticParams → recorre TODAS las páginas de la API para
- * obtener los 826+ personajes y generar sus rutas estáticas por ID.
+ * generateStaticParams → recorre las páginas de la API para generar rutas estáticas.
  */
 export async function getAllCharacterParams() {
   const allParams: { slug: string }[] = [];
 
-  // Primera página
-  const firstRes = await fetch(BASE_URL, { cache: "force-cache" });
+  const firstRes = await fetch(BASE_URL);
   if (!firstRes.ok) return [];
 
   const firstData: RMCharacterResponse = await firstRes.json();
   const totalPages = firstData.info.pages;
 
-  // Agregar personajes de la primera página
   firstData.results.forEach((c) => {
     allParams.push({ slug: String(c.id) });
   });
 
-  // Páginas restantes en paralelo para no hacer waterfall
+  if (process.env.NODE_ENV === "development") {
+    return allParams;
+  }
+
   const pageNumbers = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
-
-  const restResults = await Promise.all(
-    pageNumbers.map(async (page) => {
-      const res = await fetch(`${BASE_URL}?page=${page}`, {
-        cache: "force-cache",
-      });
-      if (!res.ok) return [];
+  
+  for (const page of pageNumbers) {
+    const res = await fetch(`${BASE_URL}?page=${page}`);
+    if (res.ok) {
       const data: RMCharacterResponse = await res.json();
-      return data.results;
-    })
-  );
-
-  restResults.forEach((results) => {
-    results.forEach((c) => {
-      allParams.push({ slug: String(c.id) });
-    });
-  });
+      data.results.forEach((c) => {
+        allParams.push({ slug: String(c.id) });
+      });
+    }
+  }
 
   return allParams;
 }

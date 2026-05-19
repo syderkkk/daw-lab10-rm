@@ -72,7 +72,6 @@ export default function SearchPage() {
     <main className="page-wrapper">
       <div className="page-container">
 
-        {/* ── Page header ── */}
         <div className="page-header">
           <p className="page-eyebrow">
             <RiAliensFill />
@@ -84,10 +83,8 @@ export default function SearchPage() {
           </p>
         </div>
 
-        {/* ── Search panel ── */}
         <div className="search-panel">
           <div className="search-grid">
-            {/* Name */}
             <div className="input-group">
               <label className="input-label" htmlFor="search-name">Nombre</label>
               <div style={{ position: "relative" }}>
@@ -113,7 +110,6 @@ export default function SearchPage() {
               </div>
             </div>
 
-            {/* Status */}
             <div className="input-group">
               <label className="input-label" htmlFor="search-status">Estado</label>
               <select
@@ -129,7 +125,6 @@ export default function SearchPage() {
               </select>
             </div>
 
-            {/* Type */}
             <div className="input-group">
               <label className="input-label" htmlFor="search-type">Tipo</label>
               <input
@@ -141,7 +136,6 @@ export default function SearchPage() {
               />
             </div>
 
-            {/* Gender */}
             <div className="input-group">
               <label className="input-label" htmlFor="search-gender">Género</label>
               <select
@@ -159,7 +153,6 @@ export default function SearchPage() {
             </div>
           </div>
 
-          {/* Clear button */}
           {hasFilters && (
             <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
               <button className="btn-outline" onClick={handleClear}>
@@ -170,7 +163,6 @@ export default function SearchPage() {
           )}
         </div>
 
-        {/* ── Results ── */}
         {loading && (
           <div className="loading-state">
             <div className="spinner" />

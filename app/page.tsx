@@ -26,7 +26,6 @@ function getDotClass(status: string) {
 export default async function HomePage() {
   const characters = await getCharacters();
 
-  /* rough counts for stats strip */
   const alive   = characters.filter((c) => c.status.toLowerCase() === "alive").length;
   const dead    = characters.filter((c) => c.status.toLowerCase() === "dead").length;
   const species = new Set(characters.map((c) => c.species)).size;
@@ -35,7 +34,6 @@ export default async function HomePage() {
     <main className="page-wrapper">
       <div className="page-container">
 
-        {/* ── Page header ── */}
         <div className="page-header">
           <p className="page-eyebrow">
             <RiAliensFill />
@@ -47,7 +45,6 @@ export default async function HomePage() {
           </p>
         </div>
 
-        {/* ── Stats strip ── */}
         <div className="stats-strip">
           <div className="stats-item">
             <span className="stats-number">{characters.length}</span>
@@ -73,7 +70,6 @@ export default async function HomePage() {
             <span className="stats-label">Especies</span>
           </div>
 
-          {/* spacer */}
           <div style={{ marginLeft: "auto" }}>
             <Link href="/search" className="btn-primary">
               <FiSearch size={14} />
@@ -82,7 +78,6 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* ── Character grid ── */}
         <div className="character-grid">
           {characters.map((character) => (
             <Link
@@ -90,7 +85,6 @@ export default async function HomePage() {
               href={`/character/${character.id}`}
               className="character-card"
             >
-              {/* Image */}
               <div className="card-img-wrapper">
                 <Image
                   src={character.image}
@@ -103,7 +97,6 @@ export default async function HomePage() {
                 <div className="card-img-overlay" />
               </div>
 
-              {/* Body */}
               <div className="card-body">
                 <h2 className="card-name">{character.name}</h2>
                 <div className="card-meta">
